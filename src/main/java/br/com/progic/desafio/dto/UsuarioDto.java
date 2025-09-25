@@ -3,7 +3,6 @@ package br.com.progic.desafio.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -20,10 +19,6 @@ public class UsuarioDto {
     private String email;
 
     private LocalDateTime dataCriacao;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public static class Builder {
 

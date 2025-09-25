@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 public class UsuarioService {
@@ -26,8 +26,12 @@ public class UsuarioService {
         this.validar(dto);
         final var entity = this.dePara(dto);
         this.repository.save(entity);
-        dto.setId(entity.getId());
-        return dto;
+        return new UsuarioDto.Builder()
+                .id(entity.getId())
+                .nome(entity.getNome())
+                .email(entity.getEmail())
+                .dataCriacao(entity.getDataCriacao())
+                .build();
     }
 
     public UsuarioDto alterar(final UsuarioDto dto) {
@@ -36,7 +40,12 @@ public class UsuarioService {
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         this.repository.save(usuario);
-        return dto;
+        return new UsuarioDto.Builder()
+                .id(usuario.getId())
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .dataCriacao(usuario.getDataCriacao())
+                .build();
     }
 
     public void excluir(final Long id) {
@@ -96,11 +105,28 @@ public class UsuarioService {
 
     private void validar(final UsuarioDto dto) {
         final var erros = new HashMap<String, String>();
-        if (dto.getEmail() != null && this.buscarUsuarioPorEmail(dto.getEmail()) != null) {
-                erros.put("email", "'" + dto.getEmail() + "' ja esta cadastrado. ");
-        }
+
+        this.validarEmail(dto, erros);
+
         if (! erros.isEmpty()) {
             throw new ConteudoInvalidoException("dado(s) invalido(s)", erros);
+        }
+    }
+
+    private void validarEmail(final UsuarioDto dto, final Map<String, String> erros) {
+        if (dto.getEmail() != null) {
+            final var usuario = this.buscarUsuarioPorEmail(dto.getEmail());
+            final var jaExiste = (
+                    usuario != null
+                            && (
+                            (dto.getId() == null)
+                                    ||
+                                    (! dto.getId().equals(usuario.getId()))
+                    )
+            );
+            if (jaExiste) {
+                erros.put("email", "'" + dto.getEmail() + "' ja esta cadastrado.");
+            }
         }
     }
 }

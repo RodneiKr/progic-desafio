@@ -73,8 +73,8 @@ public class UsuarioService {
         return ret;
     }
 
-    private UsuarioDto buscarUsuarioPorEmail(final String email) {
-        return this.dePara(this.repository.findByEmail(email));
+    private Usuario buscarUsuarioPorEmail(final String email) {
+        return this.repository.findByEmail(email);
     }
 
     private Usuario buscarUsuarioPorId(final Long id) {
@@ -117,12 +117,11 @@ public class UsuarioService {
         if (dto.getEmail() != null) {
             final var usuario = this.buscarUsuarioPorEmail(dto.getEmail());
             final var jaExiste = (
-                    usuario != null
-                            && (
-                            (dto.getId() == null)
-                                    ||
-                                    (! dto.getId().equals(usuario.getId()))
-                    )
+                usuario != null && (
+                    (dto.getId() == null)
+                    ||
+                    (! dto.getId().equals(usuario.getId()))
+                )
             );
             if (jaExiste) {
                 erros.put("email", "'" + dto.getEmail() + "' ja esta cadastrado.");

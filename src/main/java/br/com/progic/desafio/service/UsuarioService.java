@@ -29,26 +29,26 @@ public class UsuarioService {
         this.validar(dto);
         final var entity = this.dePara(dto);
         this.repository.save(entity);
-        return new UsuarioDto.Builder()
-                .id(entity.getId())
-                .nome(entity.getNome())
-                .email(entity.getEmail())
-                .dataCriacao(entity.getDataCriacao())
-                .build();
+        return new UsuarioDto(
+                entity.getId(),
+                entity.getNome(),
+                entity.getEmail(),
+                entity.getDataCriacao()
+        );
     }
 
     public UsuarioDto alterar(final UsuarioDto dto) {
         this.validar(dto);
-        final var usuario = this.buscarUsuarioPorId(dto.getId());
-        usuario.setNome(dto.getNome());
-        usuario.setEmail(dto.getEmail());
+        final var usuario = this.buscarUsuarioPorId(dto.id());
+        usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
         this.repository.save(usuario);
-        return new UsuarioDto.Builder()
-                .id(usuario.getId())
-                .nome(usuario.getNome())
-                .email(usuario.getEmail())
-                .dataCriacao(usuario.getDataCriacao())
-                .build();
+        return new UsuarioDto(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getDataCriacao()
+        );
     }
 
     public void excluir(final Long id) {
@@ -66,12 +66,12 @@ public class UsuarioService {
         final var page = this.repository.findAll(pageRequest);
         final var ret = new ArrayList<UsuarioDto>();
         page.forEach(e -> ret.add(
-                new UsuarioDto.Builder()
-                        .id(e.getId())
-                        .nome(e.getNome())
-                        .email(e.getEmail())
-                        .dataCriacao(e.getDataCriacao())
-                        .build()
+                new UsuarioDto(
+                        e.getId(),
+                        e.getNome(),
+                        e.getEmail(),
+                        e.getDataCriacao()
+                )
         ));
         return ret;
     }
@@ -88,19 +88,19 @@ public class UsuarioService {
     private Usuario dePara(final UsuarioDto de) {
         final var para = new Usuario();
         para.setId(null);
-        para.setNome(de.getNome());
-        para.setEmail(de.getEmail());
+        para.setNome(de.nome());
+        para.setEmail(de.email());
         para.setDataCriacao(LocalDateTime.now());
         return para;
     }
 
     private UsuarioDto dePara(final Usuario de) {
-        return new UsuarioDto.Builder()
-                .id(de.getId())
-                .nome(de.getNome())
-                .email(de.getEmail())
-                .dataCriacao(de.getDataCriacao())
-                .build();
+        return new UsuarioDto(
+                de.getId(),
+                de.getNome(),
+                de.getEmail(),
+                de.getDataCriacao()
+        );
     }
 
     private void validar(final UsuarioDto dto) {
@@ -115,25 +115,25 @@ public class UsuarioService {
     }
 
     private void validarNome(final UsuarioDto dto, final Map<String,String> erros) {
-        if (dto.getNome() == null || dto.getNome().isBlank()) {
+        if (dto.nome() == null || dto.nome().isBlank()) {
             erros.put(NOME, "deve ser preenchido.");
         }
     }
 
     private void validarEmail(final UsuarioDto dto, final Map<String, String> erros) {
-        if (dto.getEmail() == null || dto.getEmail().isBlank()) {
+        if (dto.email() == null || dto.email().isBlank()) {
             erros.put(EMAIL, "deve ser preenchido.");
         }
-        final var usuario = this.buscarUsuarioPorEmail(dto.getEmail());
+        final var usuario = this.buscarUsuarioPorEmail(dto.email());
         final var jaExiste = (
             usuario != null && (
-                (dto.getId() == null)
+                (dto.id() == null)
                 ||
-                (! dto.getId().equals(usuario.getId()))
+                (! dto.id().equals(usuario.getId()))
             )
         );
         if (jaExiste) {
-            erros.put(EMAIL, "'" + dto.getEmail() + "' ja esta cadastrado.");
+            erros.put(EMAIL, "'" + dto.email() + "' ja esta cadastrado.");
         }
     }
 }

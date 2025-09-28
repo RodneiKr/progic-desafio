@@ -37,15 +37,15 @@ class UsuarioServiceTest {
     @Test
     void incluirComSucesso() {
         final var dtoIncluir = this.service.incluir(this.usuarioDto());
-        assertNull(dtoIncluir.getId());
-        assertEquals(NOME,dtoIncluir.getNome());
-        assertEquals(EMAIL,dtoIncluir.getEmail());
+        assertNull(dtoIncluir.id());
+        assertEquals(NOME,dtoIncluir.nome());
+        assertEquals(EMAIL,dtoIncluir.email());
     }
 
     @Test
     void incluirComNomeEEmailNull() {
         try {
-            final var dto = new UsuarioDto.Builder().build();
+            final var dto = new UsuarioDto(null,null,null,null);
             final var dtoIncluir = this.service.incluir(dto);
             assertTrue(false);
         } catch (ConteudoInvalidoException e) {
@@ -68,8 +68,8 @@ class UsuarioServiceTest {
     void alterarComSucesso() {
         when(this.repository.findById(anyLong())).thenReturn(Optional.of(new Usuario()));
         final var dtoAlterar = this.service.alterar(this.usuarioDto());
-        assertEquals(NOME,dtoAlterar.getNome());
-        assertEquals(EMAIL,dtoAlterar.getEmail());
+        assertEquals(NOME,dtoAlterar.nome());
+        assertEquals(EMAIL,dtoAlterar.email());
     }
 
     @Test
@@ -123,10 +123,11 @@ class UsuarioServiceTest {
     }
 
     private UsuarioDto usuarioDto() {
-        return new UsuarioDto.Builder()
-                .id(ID)
-                .nome(NOME)
-                .email(EMAIL)
-                .build();
+        return new UsuarioDto(
+                ID,
+                NOME,
+                EMAIL,
+                null
+        );
     }
 }

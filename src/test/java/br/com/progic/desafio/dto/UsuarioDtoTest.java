@@ -23,12 +23,12 @@ class UsuarioDtoTest {
 
     @Test
     void validarPropriedades() {
-        final var dto = new UsuarioDto.Builder()
-                .id(0L)
-                .nome(null)
-                .email(null)
-                .dataCriacao(null)
-                .build();
+        final var dto = new UsuarioDto(
+                0L,
+                null,
+                null,
+                null
+        );
         final Set<ConstraintViolation<UsuarioDto>> violations = this.validator.validate(dto);
         violations.forEach(e -> assertTrue(MENSAGENS.contains(e.getPropertyPath() + " " + e.getMessage())));
     }

@@ -43,6 +43,17 @@ class UsuarioServiceTest {
     }
 
     @Test
+    void incluirComNomeEEmailNull() {
+        try {
+            final var dto = new UsuarioDto.Builder().build();
+            final var dtoIncluir = this.service.incluir(dto);
+            assertTrue(false);
+        } catch (ConteudoInvalidoException e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
     void incluirComEmailDuplicado() {
         try {
             when(this.repository.findByEmail(anyString())).thenReturn(new Usuario());

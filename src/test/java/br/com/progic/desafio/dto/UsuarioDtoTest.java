@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UsuarioDtoTest {
 
-    private static final List<String> MENSAGENS = List.of("nome deve ser preenchido","email deve ser preenchido");
+    private static final List<String> MENSAGENS = List.of("nome deve ser preenchido!","email deve ser preenchido!");
     private Validator validator;
 
     @BeforeEach
@@ -25,11 +25,12 @@ class UsuarioDtoTest {
     void validarPropriedades() {
         final var dto = new UsuarioDto(
                 0L,
-                null,
-                null,
+                " ",
+                "",
                 null
         );
         final Set<ConstraintViolation<UsuarioDto>> violations = this.validator.validate(dto);
+//        violations.forEach(e -> System.out.println(e.getPropertyPath() + " " + e.getMessage()));
         violations.forEach(e -> assertTrue(MENSAGENS.contains(e.getPropertyPath() + " " + e.getMessage())));
     }
 }

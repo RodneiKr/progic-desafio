@@ -58,4 +58,10 @@ public class UsuarioController {
     ) {
         return this.service.buscarTodos(pagina,qtdUsuarios, "nome");
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/TODOS")
+    public @ResponseBody List<UsuarioDto> getByAll_() {
+        return this.service.buscarTodos(0,100000, "nome");
+    }
 }
